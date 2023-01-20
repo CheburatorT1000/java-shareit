@@ -50,7 +50,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public List<Item> getSearchResults(String text) {
         List<Item> itemList = new ArrayList<>();
-        if(!text.isBlank()) {
+        if (!text.isBlank()) {
             itemList = items.values().stream()
                     .filter(Item::isAvailable)
                     .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())

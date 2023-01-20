@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.utils.Create;
 import ru.practicum.shareit.utils.Update;
 
-import java.util.Collection;
 import java.util.List;
 
 /**

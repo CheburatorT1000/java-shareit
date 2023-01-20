@@ -24,7 +24,7 @@ public class UserService {
 
     public UserDto create(UserDto userDto) {
 
-        if(userRepository.checkExistEmail(userDto.getEmail()))
+        if (userRepository.checkExistEmail(userDto.getEmail()))
             throw new ValidationException("Пользователь с таким email уже существует!");
 
         User user = userRepository.create(userDtoMapper.fromUserDtoToUser(userDto));
@@ -34,18 +34,18 @@ public class UserService {
 
     public UserDto update(long id, UserDto userDto) {
 
-        if(!userRepository.checkExistId(id))
+        if (!userRepository.checkExistId(id))
             throw new NotFoundException("Пользователь с таким id отсутствует!");
 
-        if(userRepository.checkExistEmail(userDto.getEmail()))
+        if (userRepository.checkExistEmail(userDto.getEmail()))
             throw new ValidationException("Пользователь с таким email уже существует!");
 
         User userToUpdate = userRepository.read(id);
 
-        if(userDto.getName() != null)
+        if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
 
-        if(userDto.getEmail() != null)
+        if (userDto.getEmail() != null)
             userToUpdate.setEmail(userDto.getEmail());
 
         return userDtoMapper.toUserDto(userToUpdate);

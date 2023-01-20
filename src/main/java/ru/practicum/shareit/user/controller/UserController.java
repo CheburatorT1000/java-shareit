@@ -3,10 +3,10 @@ package ru.practicum.shareit.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.utils.Create;
-import ru.practicum.shareit.utils.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.utils.Create;
+import ru.practicum.shareit.utils.Update;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@Validated({Create.class})
-                              @RequestBody UserDto userDto) {
+                          @RequestBody UserDto userDto) {
         return userService.create(userDto);
     }
 

@@ -23,14 +23,14 @@ public class ItemService {
     public ItemDto create(long userId, ItemDto itemDto) {
         Item item = itemDtoMapper.fromItemDtoToItem(itemDto);
 
-        if(!userRepository.checkExistId(userId))
+        if (!userRepository.checkExistId(userId))
             throw new NotFoundException("Пользователь с таким id отсутствует!");
         itemRepository.create(item, userId);
         return itemDtoMapper.toItemDto(item);
     }
 
     public ItemDto getById(long id) {
-        if(!itemRepository.checkItemIdExist(id))
+        if (!itemRepository.checkItemIdExist(id))
             throw new NotFoundException("Инструмент с таким id отсутствует!");
         return itemDtoMapper.toItemDto(itemRepository.getById(id));
     }
@@ -44,21 +44,21 @@ public class ItemService {
     }
 
     public ItemDto update(long userId, ItemDto itemDto, long itemId) {
-        if(!userRepository.checkExistId(userId))
+        if (!userRepository.checkExistId(userId))
             throw new NotFoundException("Пользователь с таким id отсутствует!");
-        if(!itemRepository.checkItemIdExist(itemId))
+        if (!itemRepository.checkItemIdExist(itemId))
             throw new NotFoundException("Инструмент с таким id отсутствует!");
         Item itemToUpdate = itemRepository.getById(itemId);
 
-        if(itemToUpdate.getOwner() != 0 && itemToUpdate.getOwner() != userId)
+        if (itemToUpdate.getOwner() != 0 && itemToUpdate.getOwner() != userId)
             throw new NotFoundException("Нет подходящего инструмента для этого пользователя");
-        if(itemDto.getName() != null)
+        if (itemDto.getName() != null)
             itemToUpdate.setName(itemDto.getName());
-        if(itemDto.getDescription() != null)
+        if (itemDto.getDescription() != null)
             itemToUpdate.setDescription(itemDto.getDescription());
-        if(itemDto.getAvailable() != null)
+        if (itemDto.getAvailable() != null)
             itemToUpdate.setAvailable(itemDto.getAvailable());
-        if(itemDto.getRequest() != null)
+        if (itemDto.getRequest() != null)
             itemToUpdate.setRequest(itemDto.getRequest());
         return itemDtoMapper.toItemDto(itemToUpdate);
     }

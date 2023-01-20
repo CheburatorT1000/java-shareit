@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean checkExistEmail(String email) {
-        if(email != null) {
+        if (email != null) {
             return users.values().stream()
                     .anyMatch(user -> email.equals(user.getEmail()));
         }
