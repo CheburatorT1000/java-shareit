@@ -28,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.create(item, userId);
         return ItemDtoMapper.toItemDto(item);
     }
+
     @Override
     public ItemDto getById(long id) {
         if (!itemRepository.checkItemIdExist(id))

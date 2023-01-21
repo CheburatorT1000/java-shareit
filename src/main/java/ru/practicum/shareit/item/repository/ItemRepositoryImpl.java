@@ -34,7 +34,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Item create(Item item, long userId) {
         List<Item> itemList = new ArrayList<>();
 
-        if(itemsByUserId.containsKey(userId))
+        if (itemsByUserId.containsKey(userId))
             itemList = itemsByUserId.get(userId);
 
         item.setId(makeId());
