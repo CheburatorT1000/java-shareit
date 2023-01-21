@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class UserDto {
-    long id;
+    private long id;
     @NotNull(groups = {Create.class})
-    String name;
+    private String name;
     @NotNull(groups = {Create.class})
     @Email(groups = {Update.class, Create.class})
-    String email;
+    private String email;
 }

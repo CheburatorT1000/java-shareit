@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-    private final HashMap<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
+    private final Set<String> usersByEmail = new HashSet<>();
     private long id = 0;
 
     private long makeId() {
@@ -26,17 +25,19 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean checkExistEmail(String email) {
-        if (email != null) {
-            return users.values().stream()
-                    .anyMatch(user -> email.equals(user.getEmail()));
-        }
-        return false;
+        return usersByEmail.contains(email);
+    }
+
+    @Override
+    public void deleteEmailFromSet(String email) {
+        usersByEmail.remove(email);
     }
 
     @Override
     public User create(User user) {
         user.setId(makeId());
         users.put(user.getId(), user);
+        usersByEmail.add(user.getEmail());
         return user;
     }
 
@@ -48,6 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(long id) {
+        usersByEmail.remove(users.get(id).getEmail());
         users.remove(id);
     }
 

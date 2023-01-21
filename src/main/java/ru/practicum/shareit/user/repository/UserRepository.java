@@ -10,6 +10,8 @@ public interface UserRepository {
 
     boolean checkExistEmail(String email);
 
+    void deleteEmailFromSet(String email);
+
     User create(User user);
 
     User read(long id);

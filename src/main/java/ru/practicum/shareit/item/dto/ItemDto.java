@@ -7,20 +7,17 @@ import ru.practicum.shareit.utils.Create;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder
 public class ItemDto {
-    long id;
+    private long id;
     @NotNull(groups = {Create.class})
     @NotBlank(groups = {Create.class})
-    String name;
+    private String name;
     @NotNull(groups = {Create.class})
     @NotBlank(groups = {Create.class})
-    String description;
+    private String description;
     @NotNull(groups = {Create.class})
-    Boolean available;
-    Long request;
+    private Boolean available;
+    private Long request;
 }

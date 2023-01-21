@@ -20,42 +20,47 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserDtoMapper userDtoMapper;
 
     public UserDto create(UserDto userDto) {
 
         if (userRepository.checkExistEmail(userDto.getEmail()))
             throw new ValidationException("Пользователь с таким email уже существует!");
 
-        User user = userRepository.create(userDtoMapper.fromUserDtoToUser(userDto));
+        User user = userRepository.create(UserDtoMapper.fromUserDtoToUser(userDto));
 
-        return userDtoMapper.toUserDto(user);
+        return UserDtoMapper.toUserDto(user);
     }
 
     public UserDto update(long id, UserDto userDto) {
-
         if (!userRepository.checkExistId(id))
             throw new NotFoundException("Пользователь с таким id отсутствует!");
-
         if (userRepository.checkExistEmail(userDto.getEmail()))
             throw new ValidationException("Пользователь с таким email уже существует!");
-
         User userToUpdate = userRepository.read(id);
 
         if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
 
-        if (userDto.getEmail() != null)
+        if (userDto.getEmail() != null) {
+            userRepository.deleteEmailFromSet(userToUpdate.getEmail());
             userToUpdate.setEmail(userDto.getEmail());
+        }
 
-        return userDtoMapper.toUserDto(userToUpdate);
+        return UserDtoMapper.toUserDto(userToUpdate);
     }
 
     public UserDto getById(long id) {
-        return userDtoMapper.toUserDto(userRepository.read(id));
+        if (!userRepository.checkExistId(id))
+            throw new NotFoundException("Пользователь с таким id отсутствует!");
+        return UserDtoMapper.toUserDto(userRepository.read(id));
     }
 
     public void delete(long id) {
+        if (!userRepository.checkExistId(id))
+            throw new NotFoundException("Пользователь с таким id отсутствует!");
+        User user = userRepository.read(id);
+
+        userRepository.deleteEmailFromSet(user.getEmail());
         userRepository.delete(id);
     }
 
@@ -63,7 +68,7 @@ public class UserService {
         List<User> users = userRepository.getAll();
 
         return users.stream()
-                .map(userDtoMapper::toUserDto)
+                .map(UserDtoMapper::toUserDto)
                 .collect(Collectors.toList());
     }
 }
