@@ -38,7 +38,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             itemList = itemsByUserId.get(userId);
 
         item.setId(makeId());
-        item.setOwner(userRepository.read(userId));
+//        item.setOwner(userRepository.read(userId));
         itemList.add(item);
 
         items.put(item.getId(), item);

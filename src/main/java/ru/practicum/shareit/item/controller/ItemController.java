@@ -14,8 +14,8 @@ import java.util.List;
  * TODO Sprint add-controllers.
  */
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 

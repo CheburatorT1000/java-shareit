@@ -22,9 +22,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
         Item item = ItemDtoMapper.fromItemDtoToItem(itemDto);
-
-        if (!userRepository.checkExistId(userId))
-            throw new NotFoundException("Пользователь с таким id отсутствует!");
+//
+//        if (!userRepository.checkExistId(userId))
+//            throw new NotFoundException("Пользователь с таким id отсутствует!");
         itemRepository.create(item, userId);
         return ItemDtoMapper.toItemDto(item);
     }
@@ -48,9 +48,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(long userId, ItemDto itemDto, long itemId) {
         Item itemToUpdate = itemRepository.getById(itemId);
-
-        if (!userRepository.checkExistId(userId))
-            throw new NotFoundException("Пользователь с таким id отсутствует!");
+//
+//        if (!userRepository.checkExistId(userId))
+//            throw new NotFoundException("Пользователь с таким id отсутствует!");
         if (itemToUpdate.getOwner() != null && itemToUpdate.getOwner().getId() != userId)
             throw new NotFoundException("Нет подходящего инструмента для этого пользователя");
 
