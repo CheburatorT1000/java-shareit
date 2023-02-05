@@ -117,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("Инструмент с таким id отсутствует!"));
         final Booking booking = bookingRepository.findFirstByItem_IdAndBooker_Id(itemId, userId)
                 .orElseThrow(() -> new NotFoundException("Бронирование отсутствует!"));
-        if (booking.getStatus() != BookingStatus.APPROVED || booking.getEnd().isAfter(LocalDateTime.now()))
+        if (!booking.getStatus().equals(BookingStatus.APPROVED) || booking.getEnd().isAfter(LocalDateTime.now()))
             throw new ValidationException("Нет прав оставлять комментарий!");
 
         Comment comment = CommentMapper.INSTANCE.fromDto(commentDto, user, item, LocalDateTime.now());
@@ -132,13 +132,13 @@ public class ItemServiceImpl implements ItemService {
                 .min(Comparator.comparing(Booking::getEnd));
 
         Optional<Booking> lastBooking = bookings.stream()
-                .filter(booking -> booking.getStatus() == BookingStatus.APPROVED)
+                .filter(booking -> booking.getStatus().equals(BookingStatus.APPROVED))
                 .filter(booking -> booking.getItem().getId().equals(item.getId()))
                 .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
                 .max(Comparator.comparing(Booking::getEnd));
 
         List<CommentDto> itemComments = comments.stream()
-                .filter(comment -> comment.getItem().getId() == item.getId())
+                .filter(comment -> comment.getItem().getId().equals(item.getId()))
                 .map(CommentMapper.INSTANCE::toDto)
                 .collect(Collectors.toList());
 
