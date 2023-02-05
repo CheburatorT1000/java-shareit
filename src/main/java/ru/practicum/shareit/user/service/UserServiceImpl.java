@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserDtoMapper;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,15 +20,18 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @Transactional
     @Override
     public UserDto save(UserDto userDto) {
-        User user = UserDtoMapper.fromUserDtoToUser(userDto);
-        return UserDtoMapper.toUserDto(userRepository.save(user));
+        User user = UserMapper.INSTANCE.fromDto(userDto);
+
+        return UserMapper.INSTANCE.toDto(userRepository.save(user));
     }
 
     @Override
     public UserDto findById(long id) {
-        return UserDtoMapper.toUserDto(userRepository.findById(id)
+        return UserMapper.INSTANCE.toDto(userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден!")));
     }
 
@@ -36,13 +40,14 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
 
         return users.stream()
-                .map(UserDtoMapper::toUserDto)
+                .map(UserMapper.INSTANCE::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public UserDto update(long id, UserDto userDto) {
-        User userToUpdate = UserDtoMapper.fromUserDtoToUser(findById(id));
+        User userToUpdate = UserMapper.INSTANCE.fromDto(findById(id));
 
         if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
@@ -51,9 +56,10 @@ public class UserServiceImpl implements UserService {
             userToUpdate.setEmail(userDto.getEmail());
         }
 
-        return UserDtoMapper.toUserDto(userRepository.save(userToUpdate));
+        return UserMapper.INSTANCE.toDto(userRepository.save(userToUpdate));
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         userRepository.deleteById(id);
