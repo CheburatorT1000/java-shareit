@@ -58,7 +58,7 @@ public class ItemController {
     public CommentDto postComment(@RequestHeader(SHARER_USER_ID) long userId,
                                   @PathVariable long itemId,
                                   @RequestBody CommentDto commentDto) {
-        if(commentDto.getText() != null && commentDto.getText().isBlank())
+        if (commentDto.getText() != null && commentDto.getText().isBlank())
             throw new ValidationException("Текст комментария отсутствует!");
         return itemService.postComment(userId, itemId, commentDto);
     }

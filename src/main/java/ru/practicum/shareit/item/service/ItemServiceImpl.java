@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
 
         ItemDtoResponse itemDtoResponse = addBookingsAndComments(item, bookings, comments);
 
-        if(item.getOwner().getId() != userId) {
+        if (item.getOwner().getId() != userId) {
             itemDtoResponse.setLastBooking(null);
             itemDtoResponse.setNextBooking(null);
         }
@@ -117,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("Инструмент с таким id отсутствует!"));
         final Booking booking = bookingRepository.findFirstByItem_IdAndBooker_Id(itemId, userId)
                 .orElseThrow(() -> new NotFoundException("Бронирование отсутствует!"));
-        if(booking.getStatus() != BookingStatus.APPROVED || booking.getEnd().isAfter(LocalDateTime.now()))
+        if (booking.getStatus() != BookingStatus.APPROVED || booking.getEnd().isAfter(LocalDateTime.now()))
             throw new ValidationException("Нет прав оставлять комментарий!");
 
         Comment comment = CommentMapper.INSTANCE.fromDto(commentDto, user, item, LocalDateTime.now());

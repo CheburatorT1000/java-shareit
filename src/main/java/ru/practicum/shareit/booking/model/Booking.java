@@ -11,8 +11,6 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-import static ru.practicum.shareit.booking.enums.BookingStatus.WAITING;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
