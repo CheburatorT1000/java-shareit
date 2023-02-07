@@ -93,8 +93,6 @@ public class ItemServiceImpl implements ItemService {
             itemToUpdate.setDescription(itemDto.getDescription());
         if (itemDto.getAvailable() != null)
             itemToUpdate.setAvailable(itemDto.getAvailable());
-        if (itemDto.getRequest() != null)
-            itemToUpdate.setRequest(itemDto.getRequest());
 
         return ItemMapper.INSTANCE.toDto(itemRepository.save(itemToUpdate));
     }
@@ -124,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.INSTANCE.toDto(commentRepository.save(comment));
     }
 
-    private ItemDtoResponse addBookingsAndComments(Item item, List<Booking> bookings, List<Comment> comments) {
+    private static ItemDtoResponse addBookingsAndComments(Item item, List<Booking> bookings, List<Comment> comments) {
 
         Optional<Booking> nextBooking = bookings.stream()
                 .filter(booking -> booking.getItem().getId().equals(item.getId()))

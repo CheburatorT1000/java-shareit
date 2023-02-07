@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -57,9 +56,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto postComment(@RequestHeader(SHARER_USER_ID) long userId,
                                   @PathVariable long itemId,
-                                  @RequestBody CommentDto commentDto) {
-        if (commentDto.getText() != null && commentDto.getText().isBlank())
-            throw new ValidationException("Текст комментария отсутствует!");
+                                  @Validated({Create.class}) @RequestBody CommentDto commentDto) {
         return itemService.postComment(userId, itemId, commentDto);
     }
 }

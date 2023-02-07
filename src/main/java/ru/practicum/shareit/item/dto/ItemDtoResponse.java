@@ -20,8 +20,6 @@ public class ItemDtoResponse {
 
     private User owner;
 
-    private Long request;
-
     private BookingDtoShort lastBooking;
 
     private BookingDtoShort nextBooking;

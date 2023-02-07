@@ -15,8 +15,7 @@ create table if not exists items
     owner_id    bigint                                  not null
         constraint items_users_id_fk
             references users,
-    constraint pk_item primary key (id),
-    request     bigint
+    constraint pk_item primary key (id)
 );
 create table if not exists bookings
 (

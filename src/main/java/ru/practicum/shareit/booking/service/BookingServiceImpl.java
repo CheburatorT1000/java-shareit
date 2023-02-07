@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -16,6 +17,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,34 +91,39 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByParam(long userId, String state) {
-        List<Booking> bookingList;
+        List<Booking> bookingList = new ArrayList<>();
+        BookingStatus status;
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
 
-        switch (state) {
-            case "ALL":
+        try {
+            status = BookingStatus.valueOf(state.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Unknown state: " + state);
+        }
+
+        switch (status) {
+            case ALL:
                 bookingList = bookingRepository.findBookingByBookerIdOrderByIdDesc(userId);
                 break;
-            case "CURRENT":
+            case CURRENT:
                 bookingList = bookingRepository
                         .findBookingByBookerIdAndStartIsBeforeAndEndIsAfter(userId,
                                 LocalDateTime.now(), LocalDateTime.now());
                 break;
-            case "PAST":
+            case PAST:
                 bookingList = bookingRepository.findBookingByBookerIdAndEndIsBeforeAndStatusIs(userId,
                         LocalDateTime.now(), APPROVED);
                 break;
-            case "FUTURE":
+            case FUTURE:
                 bookingList = bookingRepository.findBookingByBookerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
                 break;
-            case "WAITING":
+            case WAITING:
                 bookingList = bookingRepository.findBookingByBookerIdAndStatus(userId, WAITING);
                 break;
-            case "REJECTED":
+            case REJECTED:
                 bookingList = bookingRepository.findBookingByBookerIdAndStatus(userId, REJECTED);
                 break;
-            default:
-                throw new ValidationException("Unknown state: " + state);
         }
         return bookingList.stream()
                 .map(BookingMapper.INSTANCE::toDtoResponse)
@@ -125,34 +132,39 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwner(long userId, String state) {
-        List<Booking> bookingList;
+        List<Booking> bookingList = new ArrayList<>();
+        BookingStatus status;
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
 
-        switch (state) {
-            case "ALL":
+        try {
+            status = BookingStatus.valueOf(state.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Unknown state: " + state);
+        }
+
+        switch (status)  {
+            case ALL:
                 bookingList = bookingRepository.findBookingByItemOwnerIdOrderByIdDesc(userId);
                 break;
-            case "CURRENT":
+            case CURRENT:
                 bookingList = bookingRepository
                         .findBookingByItemOwnerIdAndStartIsBeforeAndEndIsAfter(userId,
                                 LocalDateTime.now(), LocalDateTime.now());
                 break;
-            case "PAST":
+            case PAST:
                 bookingList = bookingRepository.findBookingByItemOwnerIdAndEndIsBeforeAndStatusIs(userId,
                         LocalDateTime.now(), APPROVED);
                 break;
-            case "FUTURE":
+            case FUTURE:
                 bookingList = bookingRepository.findBookingByItemOwnerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
                 break;
-            case "WAITING":
+            case WAITING:
                 bookingList = bookingRepository.findBookingByItemOwnerIdAndStatus(userId, WAITING);
                 break;
-            case "REJECTED":
+            case REJECTED:
                 bookingList = bookingRepository.findBookingByItemOwnerIdAndStatus(userId, REJECTED);
                 break;
-            default:
-                throw new ValidationException("Unknown state: " + state);
         }
         return bookingList.stream()
                 .map(BookingMapper.INSTANCE::toDtoResponse)
