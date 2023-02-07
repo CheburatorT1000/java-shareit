@@ -143,7 +143,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Unknown state: " + state);
         }
 
-        switch (status)  {
+        switch (status) {
             case ALL:
                 bookingList = bookingRepository.findBookingByItemOwnerIdOrderByIdDesc(userId);
                 break;
