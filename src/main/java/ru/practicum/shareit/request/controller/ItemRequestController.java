@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -26,13 +27,19 @@ public class ItemRequestController {
 
     @GetMapping
     public List<ItemRequestDto> findAllById(@RequestHeader(SHARER_USER_ID) long userId) {
-        return itemRequestService.findAllById(userId);
+        return itemRequestService.findAllByRequestorId(userId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> findAllByIdAndParams(@RequestHeader(SHARER_USER_ID) long userId,
-                                                     @RequestParam(required = false, defaultValue = "0") int from,
-                                                     @RequestParam(required = false, defaultValue = "10") int size) {
-        return itemRequestService.findAllByIdAndParams(userId, from, size);
+    public List<ItemRequestDto> findAllByParams(@RequestHeader(SHARER_USER_ID) long userId,
+                                                @RequestParam(required = false, defaultValue = "0") int from,
+                                                @RequestParam(required = false, defaultValue = "10") int size) {
+        return itemRequestService.findAllByParams(userId, from, size);
+    }
+
+    @GetMapping("/{requestId}")
+    public ItemRequestDto findById(@RequestHeader(SHARER_USER_ID) long userId,
+                                   @PathVariable long requestId) {
+        return itemRequestService.findById(userId, requestId);
     }
 }

@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,5 +64,4 @@ public class UserServiceImpl implements UserService {
     public void delete(long id) {
         userRepository.deleteById(id);
     }
-
 }

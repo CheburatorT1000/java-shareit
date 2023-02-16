@@ -35,8 +35,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoResponse> getAll(@RequestHeader(SHARER_USER_ID) long userId) {
-        return itemService.getAll(userId);
+    public List<ItemDtoResponse> getAll(@RequestHeader(SHARER_USER_ID) long userId,
+                                        @RequestParam(required = false, defaultValue = "0") int from,
+                                        @RequestParam(required = false, defaultValue = "10") int size) {
+        return itemService.getAll(userId, from, size);
     }
 
     @PatchMapping("/{itemId}")
@@ -47,10 +49,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getSearchResults(@RequestParam String text) {
-        if (text == null || text.isBlank())
+    public List<ItemDto> getSearchResults(@RequestParam String text,
+                                          @RequestParam(required = false, defaultValue = "0") int from,
+                                          @RequestParam(required = false, defaultValue = "10") int size) {
+        if (text == null || text.isEmpty())
             return Collections.emptyList();
-        return itemService.getSearchResults(text);
+        return itemService.getSearchResults(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

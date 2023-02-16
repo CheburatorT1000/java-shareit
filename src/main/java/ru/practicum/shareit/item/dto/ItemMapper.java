@@ -14,10 +14,14 @@ public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
     @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "requestId", source = "request.id")
     ItemDto toDto(Item item);
 
     Item fromDto(ItemDto itemDto);
 
     @Mapping(target = "id", source = "item.id")
-    ItemDtoResponse toDtoResponse(Item item, BookingDtoShort nextBooking, BookingDtoShort lastBooking, List<CommentDto> comments);
+    ItemDtoResponse toDtoResponse(Item item,
+                                  BookingDtoShort nextBooking,
+                                  BookingDtoShort lastBooking,
+                                  List<CommentDto> comments);
 }
