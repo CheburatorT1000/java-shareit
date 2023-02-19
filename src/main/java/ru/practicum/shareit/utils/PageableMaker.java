@@ -7,7 +7,7 @@ import ru.practicum.shareit.exception.ValidationException;
 
 public class PageableMaker {
     public static Pageable makePageable(Integer from, Integer size, Sort sort) {
-        if(from == null || size == null)
+        if (from == null || size == null)
             return null;
 
         if (from < 0 || size <= 0)

@@ -11,10 +11,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
@@ -319,7 +316,8 @@ class ItemServiceImplTest {
     void postComment_whenInvoked_thenSaveComment() {
         long userId = 1L;
         long itemId = 1L;
-        commentDto.setText("testText");
+        comment.setText("testText");
+        commentDto = CommentMapper.INSTANCE.toDto(comment);
         booking2.setStatus(BookingStatus.APPROVED);
         Mockito.when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
@@ -336,7 +334,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void postComment_whenStatusNotRight_thenValidationExceptionThrown() {
+    void postComment_whenStatusWrong_thenValidationExceptionThrown() {
         long userId = 1L;
         long itemId = 1L;
         commentDto.setText("testText");

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -88,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
         final Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование отсутствует!"));
 
-        if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId)
+        if (booking.getBooker().getId().equals(userId) || booking.getItem().getOwner().getId().equals(userId))
             return BookingMapper.INSTANCE.toDtoResponse(booking);
         else
             throw new NotFoundException("Соответствие между бронированием и пользователем отсутствует!");
