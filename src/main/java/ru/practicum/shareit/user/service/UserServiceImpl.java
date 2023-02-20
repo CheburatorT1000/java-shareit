@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto update(long id, UserDto userDto) {
-        User userToUpdate = UserMapper.INSTANCE.fromDto(findById(id));
+    public UserDto update(long userId, UserDto userDto) {
+        User userToUpdate = UserMapper.INSTANCE.fromDto(findById(userId));
 
         if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
