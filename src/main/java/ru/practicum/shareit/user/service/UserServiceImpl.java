@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto update(long userId, UserDto userDto) {
-        User userToUpdate = UserMapper.INSTANCE.fromDto(findById(userId));
-
+        User userToUpdate = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
         if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
 
