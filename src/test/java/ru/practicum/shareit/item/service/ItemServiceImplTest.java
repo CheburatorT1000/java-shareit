@@ -35,8 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
-
-
     @Mock
     private ItemRepository itemRepository;
     @Mock
@@ -53,15 +51,15 @@ class ItemServiceImplTest {
     private ArgumentCaptor<Comment> commentArgumentCaptor;
     @InjectMocks
     private ItemServiceImpl itemService;
-    ItemDto itemDto;
-    UserDto userDto;
-    CommentDto commentDto;
-    ItemRequest itemRequest;
-    Item item;
-    User user;
-    Comment comment;
-    Booking booking1;
-    Booking booking2;
+    private ItemDto itemDto;
+    private UserDto userDto;
+    private CommentDto commentDto;
+    private ItemRequest itemRequest;
+    private Item item;
+    private User user;
+    private Comment comment;
+    private Booking booking1;
+    private Booking booking2;
 
     @BeforeEach
     void setUp() {

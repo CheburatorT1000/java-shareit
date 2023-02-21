@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -36,8 +37,7 @@ class UserServiceImplTest {
                 .name("returnedUserName")
                 .email("email@mail.com")
                 .build();
-        Mockito
-                .when(userRepository.save(Mockito.any()))
+        when(userRepository.save(any()))
                 .thenReturn(returnedUser);
 
 
@@ -45,7 +45,7 @@ class UserServiceImplTest {
 
 
         assertEquals("returnedUserName", userDtoActual.getName());
-        Mockito.verify(userRepository, Mockito.times(1))
+        verify(userRepository, times(1))
                 .save(UserMapper.INSTANCE.fromDto(userDtoToSave));
     }
 
@@ -57,8 +57,7 @@ class UserServiceImplTest {
                 .name("name")
                 .email("email@mail.com")
                 .build();
-        Mockito
-                .when(userRepository.findById(userId))
+        when(userRepository.findById(userId))
                 .thenReturn(Optional.of(expectedUser));
 
 
@@ -71,8 +70,7 @@ class UserServiceImplTest {
     @Test
     void findById_whenUserNotFound_thenNotFoundExceptionThrown() {
         long userId = 1L;
-        Mockito
-                .when(userRepository.findById(userId))
+        when(userRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
 
@@ -82,15 +80,14 @@ class UserServiceImplTest {
 
     @Test
     void findAll_whenInvoked_thenGetEmptyList() {
-        Mockito
-                .when(userRepository.findAll())
+        when(userRepository.findAll())
                 .thenReturn(Collections.emptyList());
 
 
         List<UserDto> all = userServiceImpl.findAll();
 
 
-        Mockito.verify(userRepository, Mockito.times(1))
+        verify(userRepository, times(1))
                 .findAll();
         assertTrue(all.isEmpty());
     }
@@ -108,13 +105,13 @@ class UserServiceImplTest {
                 .name("name2")
                 .email("email@mail.com2")
                 .build();
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userBeforeUpdate));
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userBeforeUpdate));
 
 
         userServiceImpl.update(userId, userUpdate);
 
 
-        Mockito.verify(userRepository).save(userArgumentCaptor.capture());
+        verify(userRepository).save(userArgumentCaptor.capture());
         User capturedUser = userArgumentCaptor.getValue();
         assertEquals(1L, capturedUser.getId());
         assertEquals("name2", capturedUser.getName());
@@ -132,13 +129,13 @@ class UserServiceImplTest {
         UserDto userUpdate = UserDto.builder()
                 .id(userId)
                 .build();
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userBeforeUpdate));
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userBeforeUpdate));
 
 
         userServiceImpl.update(userId, userUpdate);
 
 
-        Mockito.verify(userRepository).save(userArgumentCaptor.capture());
+        verify(userRepository).save(userArgumentCaptor.capture());
         User capturedUser = userArgumentCaptor.getValue();
         assertEquals(1L, capturedUser.getId());
         assertEquals("name", capturedUser.getName());
@@ -153,7 +150,7 @@ class UserServiceImplTest {
         userServiceImpl.delete(userId);
 
 
-        Mockito.verify(userRepository, Mockito.times(1))
+        verify(userRepository, times(1))
                 .deleteById(userId);
     }
 }

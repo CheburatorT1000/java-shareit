@@ -6,13 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
@@ -28,23 +26,21 @@ import java.util.Collections;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = BookingController.class)
 class BookingControllerTest {
-
-    @Mock
+    @Autowired
+    private MockMvc mvc;
+    @MockBean
     private BookingService bookingService;
-    public static final String SHARER_USER_ID = "X-Sharer-User-Id";
-    @InjectMocks
-    private BookingController bookingController;
-    private final ObjectMapper mapper = JsonMapper.builder()
+    private ObjectMapper mapper = JsonMapper.builder()
             .addModule(new JavaTimeModule())
             .build();
-    private MockMvc mvc;
+    public static final String SHARER_USER_ID = "X-Sharer-User-Id";
     private UserDto userDto;
     private ItemDto itemDto;
     private CommentDto commentDto;
@@ -54,9 +50,6 @@ class BookingControllerTest {
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders
-                .standaloneSetup(bookingController)
-                .build();
         userDto = UserDto.builder()
                 .id(1L)
                 .name("userName")
@@ -100,6 +93,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class));
+        verify(bookingService, times(1))
+                .save(any(), anyLong());
     }
 
     @SneakyThrows
@@ -117,6 +112,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class));
+        verify(bookingService, times(1))
+                .bookingApprove(anyLong(), anyLong(), anyBoolean());
     }
 
     @SneakyThrows
@@ -129,6 +126,8 @@ class BookingControllerTest {
                         .header(SHARER_USER_ID, 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class));
+        verify(bookingService, times(1))
+                .findById(anyLong(), anyLong());
     }
 
     @SneakyThrows
@@ -145,6 +144,8 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(bookingDto.getId()), Long.class))
                 .andExpect(jsonPath("$", hasSize(1)));
+        verify(bookingService, times(1))
+                .findAllByParam(anyLong(), anyString(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -161,5 +162,7 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(bookingDto.getId()), Long.class))
                 .andExpect(jsonPath("$", hasSize(1)));
+        verify(bookingService, times(1))
+                .findAllByOwner(anyLong(), anyString(), anyInt(), anyInt());
     }
 }

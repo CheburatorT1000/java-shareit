@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -28,24 +26,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = ItemController.class)
 class ItemControllerTest {
-    @Mock
+    @Autowired
+    private ObjectMapper mapper;
+    @Autowired
+    private MockMvc mvc;
+    @MockBean
     private ItemService itemService;
     public static final String SHARER_USER_ID = "X-Sharer-User-Id";
-    @InjectMocks
-    private ItemController itemController;
-    private final ObjectMapper mapper = new ObjectMapper();
-    private MockMvc mvc;
     private UserDto userDto;
     private ItemDto itemDto;
     private CommentDto commentDto;
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders
-                .standaloneSetup(itemController)
-                .build();
         userDto = UserDto.builder()
                 .id(1L)
                 .name("userName")
@@ -85,6 +80,8 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())));
+        verify(itemService, times(1))
+                .save(anyLong(), any());
     }
 
     @SneakyThrows
@@ -99,6 +96,8 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+        verify(itemService, never())
+                .save(anyLong(), any());
     }
 
     @SneakyThrows
@@ -123,6 +122,8 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())));
+        verify(itemService, times(1))
+                .getById(anyLong(), anyLong());
     }
 
     @SneakyThrows
@@ -136,6 +137,8 @@ class ItemControllerTest {
                         .header(SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+        verify(itemService, times(1))
+                .getAll(anyLong(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -160,6 +163,8 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())));
+        verify(itemService, times(1))
+                .update(anyLong(), any(), anyLong());
     }
 
     @SneakyThrows
@@ -175,6 +180,8 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is(itemDto.getName())))
                 .andExpect(jsonPath("$", hasSize(1)));
+        verify(itemService, times(1))
+                .getSearchResults(anyString(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -186,6 +193,8 @@ class ItemControllerTest {
                         .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+        verify(itemService, never())
+                .getSearchResults(anyString(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -205,5 +214,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id", is(commentDto.getId()), Long.class))
                 .andExpect(jsonPath("$.text", is(commentDto.getText())))
                 .andExpect(jsonPath("$.authorName", is(commentDto.getAuthorName())));
+        verify(itemService, times(1))
+                .postComment(anyLong(), anyLong(), any());
     }
 }

@@ -3,9 +3,11 @@ package ru.practicum.shareit.request.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
@@ -48,16 +50,16 @@ class ItemRequestServiceImplTest {
     ArgumentCaptor<ItemRequest> itemRequestArgumentCaptor;
     @InjectMocks
     private ItemRequestServiceImpl itemRequestService;
-    ItemDto itemDto;
-    UserDto userDto;
-    CommentDto commentDto;
-    ItemRequest itemRequest;
-    ItemRequestDto itemRequestDto;
-    Item item;
-    User user;
-    Comment comment;
-    Booking booking;
-    BookingDto bookingDto;
+    private ItemDto itemDto;
+    private UserDto userDto;
+    private CommentDto commentDto;
+    private ItemRequest itemRequest;
+    private ItemRequestDto itemRequestDto;
+    private Item item;
+    private User user;
+    private Comment comment;
+    private Booking booking;
+    private BookingDto bookingDto;
 
     @BeforeEach
     void setUp() {
@@ -124,6 +126,9 @@ class ItemRequestServiceImplTest {
         verify(requestRepository).save(itemRequestArgumentCaptor.capture());
         ItemRequest value = itemRequestArgumentCaptor.getValue();
         assertThat(value.getRequestor(), equalTo(user));
+        assertThat(value.getRequestor().getId(), equalTo(1L));
+        assertThat(value.getRequestor().getName(), equalTo("userName"));
+        assertThat(value.getRequestor().getEmail(), equalTo("name@mail.com"));
     }
 
     @Test
@@ -168,7 +173,7 @@ class ItemRequestServiceImplTest {
         when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findAllByRequestorId(userId))
-                .thenReturn(Arrays.asList(itemRequest1,itemRequest2));
+                .thenReturn(Arrays.asList(itemRequest1, itemRequest2));
         when(itemRepository.findAllByRequestIdIn(anyList()))
                 .thenReturn(Arrays.asList(item1, item2));
 
@@ -222,7 +227,7 @@ class ItemRequestServiceImplTest {
         item.setOwner(user3);
         when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
-        when(requestRepository.findAllByRequestorIdNotIn(anyList(), any(Pageable.class)))
+        when(requestRepository.findAllByRequestorIdNotIn(anyList(), any()))
                 .thenReturn(Collections.emptyList());
         when(itemRepository.findAllByRequestIdIn(anyList()))
                 .thenReturn(Arrays.asList(item1, item2));
@@ -259,6 +264,8 @@ class ItemRequestServiceImplTest {
 
         ItemRequestDto result = itemRequestService.findById(userId, requestId);
         assertThat(result.getItems(), hasSize(1));
+        assertThat(result.getItems().get(0).getDescription(), equalTo("item description"));
+        assertThat(result.getItems().get(0).getId(), equalTo(1L));
     }
 
     @Test

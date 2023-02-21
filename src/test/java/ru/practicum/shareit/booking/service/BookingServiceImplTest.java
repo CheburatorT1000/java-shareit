@@ -54,15 +54,15 @@ class BookingServiceImplTest {
     private BookingServiceImpl bookingService;
     @Captor
     private ArgumentCaptor<Booking> bookingArgumentCaptor;
-    ItemDto itemDto;
-    UserDto userDto;
-    CommentDto commentDto;
-    ItemRequest itemRequest;
-    Item item;
-    User user;
-    Comment comment;
-    Booking booking;
-    BookingDto bookingDto;
+    private ItemDto itemDto;
+    private UserDto userDto;
+    private CommentDto commentDto;
+    private ItemRequest itemRequest;
+    private Item item;
+    private User user;
+    private Comment comment;
+    private Booking booking;
+    private BookingDto bookingDto;
 
     @BeforeEach
     void setUp() {

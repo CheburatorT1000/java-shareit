@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.*;
 
 @Transactional
 @SpringBootTest(
-        properties = "db.name=test2",
+        properties = "db.name=test",
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiceImplIntTest {

@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -25,21 +23,21 @@ import java.util.Collections;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.item.controller.ItemController.SHARER_USER_ID;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = ItemRequestController.class)
 class ItemRequestControllerTest {
-    @Mock
-    private ItemRequestService itemRequestService;
-    @InjectMocks
-    private ItemRequestController itemRequestController;
-    private final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
     private MockMvc mvc;
+    @Autowired
+    private ObjectMapper mapper;
+    @MockBean
+    private ItemRequestService itemRequestService;
     private UserDto userDto;
     private ItemDto itemDto;
     private CommentDto commentDto;
@@ -48,9 +46,6 @@ class ItemRequestControllerTest {
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders
-                .standaloneSetup(itemRequestController)
-                .build();
         userDto = UserDto.builder()
                 .id(1L)
                 .name("userName")
@@ -94,6 +89,8 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(itemRequestDto.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(itemRequestDto.getDescription())));
+        verify(itemRequestService, times(1))
+                .save(any(), anyLong());
     }
 
     @SneakyThrows
@@ -107,6 +104,8 @@ class ItemRequestControllerTest {
                         .header(SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
+        verify(itemRequestService, times(1))
+                .findAllByRequestorId(anyLong());
     }
 
     @SneakyThrows
@@ -125,6 +124,8 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription())));
+        verify(itemRequestService, times(1))
+                .findAllByParams(anyLong(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -141,5 +142,7 @@ class ItemRequestControllerTest {
                         .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description", is(itemRequestDto.getDescription())));
+        verify(itemRequestService, times(1))
+                .findById(anyLong(), anyLong());
     }
 }
