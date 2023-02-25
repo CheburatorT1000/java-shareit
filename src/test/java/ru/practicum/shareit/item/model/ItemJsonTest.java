@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ItemJsonTest {
 
     @Autowired
-    JacksonTester<Item> jacksonTester;
+    private JacksonTester<Item> jacksonTester;
 
     @SneakyThrows
     @Test
