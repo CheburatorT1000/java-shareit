@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -15,8 +17,11 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.utils.PageableMaker;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
     @Transactional
     @Override
@@ -42,13 +49,19 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с таким id отсутствует!"));
 
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос не существует!"));
+            item.setRequest(itemRequest);
+        }
+
         item.setOwner(user);
+
         return ItemMapper.INSTANCE.toDto(itemRepository.save(item));
     }
 
     @Override
     public ItemDtoResponse getById(long id, long userId) {
-
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Инструмент с таким id отсутствует!"));
 
@@ -61,17 +74,17 @@ public class ItemServiceImpl implements ItemService {
             itemDtoResponse.setLastBooking(null);
             itemDtoResponse.setNextBooking(null);
         }
+
         return itemDtoResponse;
     }
 
-    @Override
-    public List<ItemDtoResponse> getAll(long ownerId) {
-        List<Item> items = itemRepository.findAllByOwnerIdOrderById(ownerId);
+    public List<ItemDtoResponse> getAll(long ownerId, int from, int size) {
+        Pageable paging = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.ASC, "id"));
+        List<Item> items = itemRepository.findAllByOwnerId(ownerId, paging);
         List<Booking> bookings = bookingRepository.findAllByItemOwnerId(ownerId);
         List<Comment> comments = commentRepository.findAllByItem_IdIn(items.stream()
                 .map(Item::getId)
                 .collect(Collectors.toList()));
-
 
         return items.stream()
                 .map(item -> addBookingsAndComments(item, bookings, comments))
@@ -98,8 +111,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getSearchResults(String text) {
-        List<Item> items = itemRepository.searchByText(text.toLowerCase());
+    public List<ItemDto> getSearchResults(String text, int from, int size) {
+        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.ASC, "id"));
+        List<Item> items = itemRepository.searchByText(text.toLowerCase(), pageable);
 
         return items.stream()
                 .map(ItemMapper.INSTANCE::toDto)

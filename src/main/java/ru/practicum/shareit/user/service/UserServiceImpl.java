@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,9 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto update(long id, UserDto userDto) {
-        User userToUpdate = UserMapper.INSTANCE.fromDto(findById(id));
-
+    public UserDto update(long userId, UserDto userDto) {
+        User userToUpdate = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
         if (userDto.getName() != null)
             userToUpdate.setName(userDto.getName());
 
@@ -64,5 +64,4 @@ public class UserServiceImpl implements UserService {
     public void delete(long id) {
         userRepository.deleteById(id);
     }
-
 }
