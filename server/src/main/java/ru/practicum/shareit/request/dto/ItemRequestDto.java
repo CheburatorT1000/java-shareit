@@ -3,9 +3,7 @@ package ru.practicum.shareit.request.dto;
 import lombok.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.UserDto;
-import ru.practicum.shareit.utils.Create;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +15,7 @@ import java.util.List;
 public class ItemRequestDto {
 
     private Long id;
-    @NotNull(groups = {Create.class})
+
     private String description;
 
     private UserDto requestor;

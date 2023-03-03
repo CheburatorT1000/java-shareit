@@ -1,17 +1,14 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.utils.Create;
-import ru.practicum.shareit.utils.PageableMaker;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto save(@RequestHeader(SHARER_USER_ID) long userId,
-                           @Validated({Create.class}) @RequestBody BookingDtoCreate bookingDtoCreate) {
+                           @RequestBody BookingDtoCreate bookingDtoCreate) {
         return bookingService.save(bookingDtoCreate, userId);
     }
 
@@ -47,13 +44,8 @@ public class BookingController {
                                         @RequestParam(required = false, defaultValue = "ALL") String state,
                                         @RequestParam(required = false) Integer from,
                                         @RequestParam(required = false) Integer size) {
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
-        BookingStatus status;
-        try {
-            status = BookingStatus.valueOf(state.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: " + state);
-        }
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "id"));
+        BookingStatus status = BookingStatus.valueOf(state.toUpperCase());
         return bookingService.findAllByParam(userId, status, pageable);
     }
 
@@ -62,13 +54,8 @@ public class BookingController {
                                         @RequestParam(required = false, defaultValue = "ALL") String state,
                                         @RequestParam(required = false) Integer from,
                                         @RequestParam(required = false) Integer size) {
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
-        BookingStatus status;
-        try {
-            status = BookingStatus.valueOf(state.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: " + state);
-        }
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "id"));
+        BookingStatus status = BookingStatus.valueOf(state.toUpperCase());
         return bookingService.findAllByOwner(userId, status, pageable);
     }
 }

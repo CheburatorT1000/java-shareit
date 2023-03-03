@@ -13,18 +13,11 @@ import java.util.List;
 @Builder
 public class ItemDtoResponse {
     private Long id;
-
     private String name;
-
     private String description;
-
     private Boolean available;
-
     private User owner;
-
     private BookingDtoShort lastBooking;
-
     private BookingDtoShort nextBooking;
-
     private List<CommentDto> comments;
 }

@@ -8,6 +8,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -28,7 +29,6 @@ import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.utils.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -392,7 +392,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
         assertThat(returnedList, hasSize(1));
     }
@@ -411,7 +411,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         NotFoundException exception = assertThrows(NotFoundException.class,
@@ -436,7 +436,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
@@ -460,7 +460,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
@@ -484,7 +484,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
@@ -508,7 +508,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
@@ -532,7 +532,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByParam(userId, status, pageable);
@@ -555,7 +555,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);
@@ -576,7 +576,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         NotFoundException exception = assertThrows(NotFoundException.class,
@@ -601,7 +601,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);
@@ -625,7 +625,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);
@@ -649,7 +649,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);
@@ -673,7 +673,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);
@@ -697,7 +697,7 @@ class BookingServiceImplTest {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<BookingDto> returnedList = bookingService.findAllByOwner(userId, status, pageable);

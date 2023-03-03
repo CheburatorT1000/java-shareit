@@ -1,14 +1,12 @@
 package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.utils.Create;
-import ru.practicum.shareit.utils.PageableMaker;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto save(@RequestHeader(SHARER_USER_ID) long userId,
-                               @Validated({Create.class}) @RequestBody ItemRequestDto itemRequestDto) {
+                               @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestService.save(itemRequestDto, userId);
     }
 
@@ -36,7 +34,7 @@ public class ItemRequestController {
     public List<ItemRequestDto> findAllByParams(@RequestHeader(SHARER_USER_ID) long userId,
                                                 @RequestParam(required = false, defaultValue = "0") int from,
                                                 @RequestParam(required = false, defaultValue = "10") int size) {
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.ASC, "created"));
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "created"));
         return itemRequestService.findAllByParams(userId, pageable);
     }
 

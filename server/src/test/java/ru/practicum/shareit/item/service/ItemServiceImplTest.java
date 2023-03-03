@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.enums.BookingStatus;
@@ -23,7 +24,6 @@ import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.utils.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -220,7 +220,7 @@ class ItemServiceImplTest {
         long ownerId = 1L;
         int from = 0;
         int size = 5;
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.ASC, "id"));
         Mockito.when(itemRepository.findAllByOwnerId(Mockito.anyLong(), Mockito.any(Pageable.class)))
                 .thenReturn(Collections.singletonList(item));
         Mockito.when(bookingRepository.findAllByItemOwnerId(ownerId))
@@ -306,7 +306,7 @@ class ItemServiceImplTest {
         String text = "aSd";
         int from = 0;
         int size = 5;
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.ASC, "id"));
         Mockito.when(itemRepository.searchByText(Mockito.anyString(), Mockito.any(Pageable.class)))
                 .thenReturn(Collections.singletonList(item));
 

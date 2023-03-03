@@ -87,22 +87,6 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void create_whenItemDtoWithNotValidFields_thenReturnStatusBadRequest() {
-        ItemDto itemDto1 = ItemDto.builder().build();
-
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto1))
-                        .header(SHARER_USER_ID, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        verify(itemService, never())
-                .save(anyLong(), any());
-    }
-
-    @SneakyThrows
-    @Test
     void getById_whenInvoked_thenGetItemDtoResponse() {
         long itemId = 1L;
         long userId = 1L;
@@ -182,19 +166,6 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].name", is(itemDto.getName())))
                 .andExpect(jsonPath("$", hasSize(1)));
         verify(itemService, times(1))
-                .getSearchResults(anyString(), any(Pageable.class));
-    }
-
-    @SneakyThrows
-    @Test
-    void getSearchResults_whenTextIsEmpty_thenGetEmptyList() {
-        mvc.perform(get("/items/search")
-                        .param("text", "")
-                        .param("from", "0")
-                        .param("size", "2"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
-        verify(itemService, never())
                 .getSearchResults(anyString(), any(Pageable.class));
     }
 

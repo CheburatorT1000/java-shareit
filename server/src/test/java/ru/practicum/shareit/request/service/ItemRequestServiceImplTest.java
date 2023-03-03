@@ -8,6 +8,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -27,7 +28,6 @@ import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.utils.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -234,7 +234,7 @@ class ItemRequestServiceImplTest {
                 .thenReturn(Collections.emptyList());
         when(itemRepository.findAllByRequestIdIn(anyList()))
                 .thenReturn(Arrays.asList(item1, item2));
-        Pageable pageable = PageableMaker.makePageable(from, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "id"));
 
 
         List<ItemRequestDto> allByParams = itemRequestService.findAllByParams(userId, pageable);
